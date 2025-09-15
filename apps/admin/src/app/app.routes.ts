@@ -19,6 +19,7 @@ export const routes: Routes = [
       { path: 'test', component: TestComponent },
     ],
   },
+
   { path: '404', component: NotFoundComponent },
   {
     path: '**',

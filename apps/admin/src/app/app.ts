@@ -7,14 +7,13 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-import { AlertComponent } from './components/alert.component';
 import { NgxNProgressService } from 'ngx-nprogress';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AlertComponent],
+  imports: [RouterOutlet],
   providers: [NgxNProgressService],
-  template: `<router-outlet /><app-alert></app-alert>`,
+  template: ` <router-outlet />`,
 })
 export class App {
   private router = inject(Router);

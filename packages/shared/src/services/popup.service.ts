@@ -36,7 +36,6 @@ export class PopupService {
     document.body.appendChild(popupContainerRef.location.nativeElement);
     this.appRef.attachView(popupContainerRef.hostView);
     popupContainerRef.changeDetectorRef.detectChanges();
-
     const componentRef = popupContainerRef.instance.vc.createComponent(
       component,
       {
