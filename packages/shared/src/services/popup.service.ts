@@ -37,16 +37,20 @@ export class PopupService {
     this.appRef.attachView(popupContainerRef.hostView);
     popupContainerRef.changeDetectorRef.detectChanges();
 
-    popupContainerRef.instance.vc.createComponent(component, {
-      injector: Injector.create({
-        providers: [{ provide: POPUP_PROPS, useValue: config.props }],
-      }),
-    });
+    const componentRef = popupContainerRef.instance.vc.createComponent(
+      component,
+      {
+        injector: Injector.create({
+          providers: [{ provide: POPUP_PROPS, useValue: config.props }],
+        }),
+      }
+    );
 
     setTimeout(() => {
       popupContainerRef.instance.show();
     });
     this.popupContainerRefs.push(popupContainerRef);
+    return { popupContainerRef, componentRef };
   }
 
   close() {

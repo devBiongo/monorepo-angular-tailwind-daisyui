@@ -1,15 +1,33 @@
 import { Component, inject } from '@angular/core';
 import { POPUP_PROPS, PopupService } from '@bion/shared';
 import { ConfirmService } from '../../services/confirm.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
-  template: ` <button class="btn" (click)="handleClick()">test</button> `,
+  template: `
+    <div>
+      <button class="btn" (click)="handleClick()">test</button>
+    </div>
+    <div>
+      <button class="btn" (click)="aaa()">alert</button>
+    </div>
+  `,
 })
 export class TestComponent {
   private confirmService = inject(ConfirmService);
+  private alertService = inject(AlertService);
 
-  handleClick() {
-    this.confirmService.show('nihao');
+  async handleClick() {
+    this.confirmService.show('nihao', async () => {
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject(true);
+        }, 3000);
+      });
+    });
+  }
+  aaa() {
+    this.alertService.show('xxx');
   }
 }
 
