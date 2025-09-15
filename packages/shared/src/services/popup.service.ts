@@ -13,6 +13,7 @@ import {
   ViewContainerRef,
   inject,
 } from '@angular/core';
+import { DialogCloseDirective } from '../directives/dialog-close.directive';
 
 export interface PopupConfig<P> {
   props?: P;
@@ -70,8 +71,9 @@ export class PopupService {
 }
 
 @Component({
+  imports: [DialogCloseDirective],
   template: `
-    <dialog class="modal" #dialogEl>
+    <dialog class="modal" libDialogClose #dialogEl (closed)="onDialogClosed()">
       <div
         class="modal-box bg-transparent shadow-none rounded-none p-0 flex justify-center max-w-none max-h-none"
       >
@@ -94,36 +96,39 @@ class PopupContainerComponent {
 
   public config?: PopupConfig<unknown>;
 
-  public service = inject(PopupService);
+  public popupService = inject(PopupService);
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && this.config?.disableClose) {
       event.preventDefault();
       event.stopPropagation();
-      if (this.config?.disableClose) return;
-      this.service.close();
     }
   }
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent) {
-    if (this.config && this.config.disableClose) {
+    if (this.config?.disableClose) {
       return;
     }
-    if (
-      this.boxEl &&
-      !this.boxEl.nativeElement.contains(event.target as Node)
-    ) {
-      this.service.close();
+    if (!this.isClickInsideBox(event.target)) {
+      this.close();
     }
   }
 
-  close() {
+  private isClickInsideBox(target: EventTarget | null): boolean {
+    return !!target && this.boxEl?.nativeElement.contains(target as Node);
+  }
+
+  public onDialogClosed() {
+    this.popupService.close();
+  }
+
+  public close() {
     this.dialogEl.nativeElement.close();
   }
 
-  show() {
+  public show() {
     this.dialogEl.nativeElement.showModal();
   }
 }
